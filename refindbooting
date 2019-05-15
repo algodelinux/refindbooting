@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# refindbooting - Establece rEFInd como primera opción de arranque y ubuntu como segunda
+# refindbooting - Establece rEFInd como primera opción de arranque, ubuntu como segunda y Windows como tercera
 # 2018-2019 Esteban M. Navas Martín <algodelinux@gmail.com>.
 #
 
@@ -17,6 +17,5 @@ efibootmgr | grep "ubuntu" 2>&1 > /dev/null || efibootmgr -c -d $disk -p $(gdisk
 efibootmgr -v | grep "rEFInd Boot Manager" 2>&1 > /dev/null || efibootmgr -c -d $disk -p $(gdisk -l $disk | grep "EFI system partition" | awk '{print $1}') -L "rEFInd Boot Manager" -l "/EFI/refind/refind_x64.efi"
 
 # Establecemos el siguiente orden de arranque: rEFInd, ubuntu
-efibootmgr -o "$(efibootmgr -v | grep "rEFInd Boot Manager" | cut -f1 -d" " | sed -e "s/^Boot//" -e "s/*$//")","$(efibootmgr -v | grep "ubuntu" | cut -f1 -d" " | sed -e "s/^Boot//" -e "s/*$//")"
-
+efibootmgr -o "$(efibootmgr -v | grep "rEFInd Boot Manager" | cut -f1 -d" " | sed -e "s/^Boot//" -e "s/*$//" | tr '\n' ',' | sed "s/,$//")","$(efibootmgr -v | grep "ubuntu" | cut -f1 -d" " | sed -e "s/^Boot//" -e "s/*$//")"
 
